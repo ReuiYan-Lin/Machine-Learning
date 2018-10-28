@@ -18,11 +18,13 @@ from keras.regularizers import l2
 import matplotlib.pyplot as plt
 
 def DNN(n_users,n_movies,dim,dropout=0.1):
-    u_input = Input(shape = (4,))
+    u_input = Input(shape = (4,)) # use bias
+	#u_input = Input(shape = (1,)) 
     u = Embedding(n_users,dim)(u_input)
     u = Flatten()(u)
     
-    m_input = Input(shape = (19,))
+    m_input = Input(shape = (19,)) # use bias
+	#m_input = Input(shape = (1,))
     m = Embedding(n_movies,dim)(m_input)
     m = Flatten()(m)
     
@@ -131,8 +133,8 @@ def main():
         new_Users = np.array(list(map(users_mx.get, Users)))
         new_Movies = np.array(list(map(movies_mx.get, Movies)))
     
-    #model = DNN(max_userid,max_movieid,DIM)
-    model = Matrix_Factorization(max_userid,max_movieid,DIM)
+    model = DNN(max_userid,max_movieid,DIM)
+    #model = Matrix_Factorization(max_userid,max_movieid,DIM)
     model.compile(loss='mse',optimizer='adamax',metrics=[rmse]) 
 
     callbacks = [EarlyStopping('val_rmse',patience=2),
@@ -176,8 +178,8 @@ if __name__ == '__main__':
 
     DIM = 8
     MAX_FILE = '../model/max.csv'
-    enable_bias = False
-    normalize = False
+    enable_bias = True
+    normalize = True
     plt_record = True
 
     classes = ["Adventure", "Western", "Comedy", "Thriller", "Horror", "Mystery", "Crime", "Film-Noir", "Sci-Fi", "Fantasy", "Drama", "Musical", "War", "Documentary", "Children's", "Animation", "Action", "Romance"]
